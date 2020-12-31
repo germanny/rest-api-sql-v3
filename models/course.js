@@ -35,30 +35,8 @@ module.exports = (sequelize) => {
         }
       }
     },
-    estimatedTime: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        notNull: {
-          msg: 'A course\'s "estimated time" is required!'
-        },
-        notEmpty: {
-          msg: 'Please provide a course\'s "estimated time"!'
-        }
-      }
-    },
-    materialsNeeded: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        notNull: {
-          msg: 'A list of materials needed is required!'
-        },
-        notEmpty: {
-          msg: 'Please provide a list of materials needed!'
-        }
-      }
-    }
+    estimatedTime: { type: DataTypes.STRING },
+    materialsNeeded: { type: DataTypes.STRING }
   }, { sequelize });
 
   // Add associations.

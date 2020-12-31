@@ -14,7 +14,7 @@ router.get('/', asyncHandler(async (req, res) => {
   });
 
   if (courses) {
-    //console.log(courses.map(course => course.get({ plain: true })));
+    console.log(courses.map(course => course.get({ plain: true })));
     res.json(courses);
   } else {
     res
@@ -30,7 +30,6 @@ router.get('/:id', asyncHandler(async (req, res) => {
   });
 
   if (course) {
-    //console.log(course);
     res.json(course);
   } else {
     res
@@ -44,7 +43,7 @@ router.get('/:id', asyncHandler(async (req, res) => {
 router.post('/', asyncHandler(async (req, res) => { // authenticateUser,
   try {
     const course = await Course.create(req.body);
-    //console.log(course);
+    console.log(course);
     res
       .status(201)
       .location('/' + course.id)
@@ -65,25 +64,37 @@ router.post('/', asyncHandler(async (req, res) => { // authenticateUser,
 
 // A /api/courses/:id PUT route that will UPDATE the corresponding course and return a 204 HTTP status code and no content.
 router.put('/:id', asyncHandler(async (req, res) => { // authenticateUser,
-  const course = await Course.findByPk(req.params.id);
+  try {
+    const course = await Course.findByPk(req.params.id);
 
-  if (course) {
-    await course.update({
-      title: req.body.title,
-      description: req.body.description,
-      estimatedTime: req.body.estimatedTime,
-      materialsNeeded: req.body.materialsNeeded,
-      userId: req.body.userId
-    });
+    if (course) {
+      await course.update({
+        title: req.body.title,
+        description: req.body.description,
+        estimatedTime: req.body.estimatedTime,
+        materialsNeeded: req.body.materialsNeeded,
+        userId: req.body.userId
+      });
 
-    res
-      .status(204)
-      .json({ "message": "Course updated!" });
-  } else {
-    console.log("no course");
-    res
-      .status(404)
-      .json({ message: "Sorry, course not found. :(" });
+      res
+        .status(204)
+        .json({ "message": "Course updated!" });
+    } else {
+      res
+        .status(404)
+        .json({ message: "Sorry, course not found. :(" });
+    }
+  } catch (error) {
+    console.log('ERROR: ', error.name);
+
+    if (error.name === 'SequelizeValidationError' || error.name === 'SequelizeUniqueConstraintError') {
+      const errors = error.errors.map(err => err.message);
+      res
+        .status(400)
+        .json({ errors });
+    } else {
+      throw error;
+    }
   }
 }));
 
