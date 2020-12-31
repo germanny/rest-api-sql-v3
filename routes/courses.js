@@ -14,7 +14,7 @@ router.get('/', asyncHandler(async (req, res) => {
   });
 
   if (courses) {
-    console.log(courses.map(course => course.get({ plain: true })));
+    //console.log(courses.map(course => course.get({ plain: true })));
     res.json(courses);
   } else {
     res
@@ -40,14 +40,13 @@ router.get('/:id', asyncHandler(async (req, res) => {
 
 
 // A /api/courses POST route that will CREATE a new course, set the Location header to the URI for the newly created course, and return a 201 HTTP status code and no content.
-router.post('/', asyncHandler(async (req, res) => { // authenticateUser,
+router.post('/', authenticateUser, asyncHandler(async (req, res) => {
   try {
     const course = await Course.create(req.body);
-    console.log(course);
+    //console.log(course);
     res
       .status(201)
-      .location('/' + course.id)
-      .json({ "message": "Course added!" });
+      .location('/' + course.id);
   } catch (error) {
     console.log('ERROR: ', error.name);
 
@@ -63,7 +62,7 @@ router.post('/', asyncHandler(async (req, res) => { // authenticateUser,
 }));
 
 // A /api/courses/:id PUT route that will UPDATE the corresponding course and return a 204 HTTP status code and no content.
-router.put('/:id', asyncHandler(async (req, res) => { // authenticateUser,
+router.put('/:id', authenticateUser, asyncHandler(async (req, res) => {
   try {
     const course = await Course.findByPk(req.params.id);
 
@@ -76,9 +75,7 @@ router.put('/:id', asyncHandler(async (req, res) => { // authenticateUser,
         userId: req.body.userId
       });
 
-      res
-        .status(204)
-        .json({ "message": "Course updated!" });
+      res.status(204);
     } else {
       res
         .status(404)
@@ -99,14 +96,12 @@ router.put('/:id', asyncHandler(async (req, res) => { // authenticateUser,
 }));
 
 // A /api/courses/:id DELETE route that will DELETE the corresponding course and return a 204 HTTP status code and no content.
-router.delete('/:id', asyncHandler(async (req, res) => { // authenticateUser,
+router.delete('/:id', authenticateUser, asyncHandler(async (req, res) => {
   const course = await Course.findByPk(req.params.id);
 
   if (course) {
     await course.destroy();
-    res
-      .status(204)
-      .json({ "message": "Course deleted!" });
+    res.status(204);
   } else {
     res
       .status(404)

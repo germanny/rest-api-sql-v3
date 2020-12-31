@@ -1,6 +1,6 @@
 'use strict';
 const { Model, DataTypes } = require('sequelize');
-//const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 // firstName, lastName, emailAddress, password
 
@@ -61,27 +61,15 @@ module.exports = (sequelize) => {
         notEmpty: {
           msg: 'Please provide a password!'
         },
-        len: {
-          args: [8, 20],
-          msg: 'The password should be between 8-20 characters!'
+      },
+      set(value) { // len validation does not seem to work with a setter
+        if (value.length >= 8 && value.length <= 20) {
+          this.setDataValue('password', bcrypt.hashSync(value, 10));
+        } else {
+          throw new Error('Your password should be between 8-20 characters!');
         }
       }
-    },
-    // confirmedPassword: {
-    //   type: DataTypes.STRING,
-    //   allowNull: false,
-    //   // set(val) {
-    //   //   if (val === this.password) {
-    //   //     const hashedPassword = bcrypt.hashSync(val, 10);
-    //   //     this.setDataValue('confirmedPassword', hashedPassword);
-    //   //   }
-    //   // },
-    //   validate: {
-    //     notNull: {
-    //       msg: 'Both passwords must match!'
-    //     }
-    //   }
-    // }
+    }
   }, { sequelize });
 
   // Add associations.
