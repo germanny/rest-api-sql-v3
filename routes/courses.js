@@ -47,6 +47,7 @@ router.post('/', authenticateUser, asyncHandler(async (req, res) => {
     res
       .status(201)
       .location('/api/courses/' + course.id)
+      .end();
   } catch (error) {
     console.log('ERROR: ', error.name);
 
@@ -75,7 +76,9 @@ router.put('/:id', authenticateUser, asyncHandler(async (req, res) => {
         userId: req.body.userId
       });
 
-      res.status(204);
+      res
+        .status(204)
+        .end();
     } else {
       res
         .status(404)
@@ -101,7 +104,9 @@ router.delete('/:id', authenticateUser, asyncHandler(async (req, res) => {
 
   if (course) {
     await course.destroy();
-    res.status(204);
+    res
+      .status(204)
+      .end();
   } else {
     res
       .status(404)
