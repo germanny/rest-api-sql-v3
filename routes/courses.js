@@ -65,6 +65,13 @@ router.post('/', authenticateUser, asyncHandler(async (req, res) => {
 // A /api/courses/:id PUT route that will UPDATE the corresponding course and return a 204 HTTP status code and no content.
 router.put('/:id', authenticateUser, asyncHandler(async (req, res) => {
   try {
+    // test if req.body is empty - https://stackoverflow.com/a/42921907/6035973
+    if (req.body.constructor === Object && Object.keys(req.body).length === 0) {
+      res
+        .status(400)
+        .json({ message: "No updated content found. :(" });
+    }
+
     const course = await Course.findByPk(req.params.id);
 
     if (course) {
