@@ -46,7 +46,7 @@ router.post('/', authenticateUser, asyncHandler(async (req, res) => {
     //console.log(course);
     res
       .status(201)
-      .location('/' + course.id);
+      .location('/api/courses/' + course.id)
   } catch (error) {
     console.log('ERROR: ', error.name);
 
